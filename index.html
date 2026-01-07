@@ -5,17 +5,20 @@
 <title>التحضير اليومي</title>
 
 <style>
-@page {
-    size: A4;
-    margin: 15mm;
+@page { size: A4; margin: 8mm; }
+
+/* ===== هيكل الصفحة ===== */
+html, body {
+    height: 100%;
+    margin: 0;
 }
 
 body {
-    font-family: Tahoma, Arial, sans-serif;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    font-family: "Tahoma","Arial","Segoe UI",sans-serif;
+    display: grid;
+    grid-template-rows: auto 1fr auto; /* header | content | footer */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
 }
 
 /* ===== الهيدر ===== */
@@ -25,49 +28,54 @@ body {
     align-items: center;
 }
 
-.logo-box {
+.logo-box img {
+    height: 75px;
+}
+
+/* ===== العناوين ===== */
+h2 {
     text-align: center;
-    font-size: 11px;
+    margin: 2px 0;
+    font-size: 15px;
     font-weight: bold;
 }
 
-.logo-box img { height: 70px; }
-
-/* ===== العناوين ===== */
-h2, h3 {
+h3 {
     text-align: center;
-    margin: 4px 0;
+    margin: 2px 0;
+    font-size: 11px;
+    font-weight: bold;
 }
 
 .date {
     text-align: center;
     font-weight: bold;
-    font-size: 13px;
-    margin-bottom: 6px;
+    font-size: 11px;
+    margin-bottom: 3px;
 }
 
-.content { flex: 1; }
-
-/* ===== شريط الأدوات ===== */
+/* ===== الأدوات ===== */
 .controls {
     text-align: center;
-    margin: 8px 0;
+    margin: 4px 0;
 }
 
-.controls button, .controls input, .controls select {
-    padding: 5px 10px;
+.controls button {
+    padding: 3px 6px;
     margin: 2px;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
     cursor: pointer;
 }
 
-/* ===== الجدول ===== */
-.table-wrapper {
-    width: 72%;
-    margin: 0 auto 6px;
+/* ===== منطقة المحتوى (الجدول) ===== */
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* ⬅️ توسيط عمودي */
 }
 
+/* ===== الجدول ===== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -75,52 +83,66 @@ table {
 }
 
 th, td {
-    border: 2px solid #000;
-    font-size: 10.5px;
-    height: 18px;
+    border: 1px solid #000;
+    font-size: 9.5px;
+    font-weight: 600;
+    height: 13px;
     text-align: center;
+    padding: 0;
 }
 
-th { background: #eaeaea; }
+th {
+    background: #eaeaea !important;
+    font-size: 10px;
+    font-weight: 700;
+}
 
-.num-col { width: 10%; }
-.name-col { width: 45%; }
-.loc-col  { width: 45%; }
+.num-col  { width: 5%; }
+.name-col { width: 28%; }
+.loc-col  { width: 27%; }
+.sign-col { width: 40%; }
 
 input, select {
     width: 100%;
     height: 100%;
     border: none;
-    font-size: 10.5px;
     background: transparent;
+    font-size: 9.5px;
+    font-weight: 600;
     text-align: center;
 }
 
-#morningTable tbody td { background: #fff6cc; }
-#eveningTable tbody td { background: #e6f2ff; }
+/* ===== التوقيع ===== */
+canvas {
+    width: 100%;
+    height: 18px;
+    border: 1px dashed #000;
+}
 
-/* ===== المجاميع ===== */
+/* ===== الألوان ===== */
+#morningTable tbody td { background: #fff6cc !important; }
+#eveningTable tbody td { background: #e6f2ff !important; }
+
+/* ===== الفوتر ===== */
+.footer {
+    font-size: 10px;
+}
+
 .center-totals {
     text-align: center;
     font-weight: bold;
-    font-size: 13px;
-    margin: 6px 0;
+    margin: 3px 0;
 }
-
-/* ===== الفوتر ===== */
-.footer { margin-top: auto; }
 
 .signatures {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
-    font-size: 13px;
 }
 
-.time-picker { display:none; margin:5px 0; }
-
+/* ===== طباعة ===== */
 @media print {
-    .controls, .time-picker { display: none; }
+    .controls { display:none; }
 }
 </style>
 </head>
@@ -128,89 +150,70 @@ input, select {
 <body>
 
 <!-- ===== الهيدر ===== -->
-<div class="header">
-    <div class="logo-box">
-        <img src="majdoul.png">
-        
+<div>
+    <div class="header">
+        <div class="logo-box"><img src="majdoul.png"></div>
+        <div class="logo-box"><img src="linkexpert.png"></div>
     </div>
-    <div class="logo-box">
-        <img src="linkexpert.png">
-      
+    <h2>التحضير اليومي</h2>
+    <div class="date" id="dateTime"></div>
+
+    <div class="controls">
+        <button onclick="window.print()">🖨️ PDF</button>
+        <button onclick="exportExcel()">📊 Excel</button>
+        <button onclick="clearData()">🗑️ مسح</button>
+        <button onclick="setMode('morning')">☀️ صباح</button>
+        <button onclick="setMode('evening')">🌙 مساء</button>
+        <button onclick="setMode('all')">📋 كامل</button>
+        <button onclick="toggleDate()">🕒 تعديل التاريخ</button>
     </div>
 </div>
 
-<h2>التحضير اليومي</h2>
-<div class="date" id="dateTime"></div>
+<input type="datetime-local" id="customDate" onchange="applyDate()" style="display:none;">
 
-<!-- ===== شريط الأدوات ===== -->
-<div class="controls">
-    <button onclick="window.print()">🖨️ PDF</button>
-    <button onclick="exportExcel()">📊 Excel</button>
-    <button onclick="clearData()">🗑️ مسح</button>
-    <button onclick="setMode('morning')">☀️ صباح</button>
-    <button onclick="setMode('evening')">🌙 مساء</button>
-    <button onclick="setMode('all')">📋 كامل</button>
-    <button onclick="toggleDate()">🕒 تعديل التاريخ</button>
-    <input type="datetime-local" id="customDate" onchange="applyDate()" style="display:none;">
-    <button onclick="toggleTime()">⏰ تعديل الوقت</button>
-</div>
-
-<!-- ===== تعديل الوقت فقط ===== -->
-<div class="time-picker" id="timePicker">
-    <input type="number" id="hour" min="1" max="12" placeholder="ساعة" style="width:50px;">
-    :
-    <input type="number" id="minute" min="0" max="59" placeholder="دقيقة" style="width:50px;">
-    <select id="ampm">
-        <option>AM</option>
-        <option>PM</option>
-    </select>
-    <button onclick="applyCustomTime()">تطبيق</button>
-</div>
-
+<!-- ===== المحتوى ===== -->
 <div class="content">
 
 <h3 id="morningTitle">تحضير الصباح</h3>
-<div class="table-wrapper" id="morningWrap">
 <table id="morningTable">
 <thead>
 <tr>
-    <th class="num-col">#</th>
-    <th class="name-col">الاسم</th>
-    <th class="loc-col">الموقع</th>
+<th class="num-col">#</th>
+<th class="name-col">الاسم</th>
+<th class="loc-col">الموقع</th>
+<th class="sign-col">التوقيع</th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
-</div>
 
 <h3 id="eveningTitle">تحضير المساء</h3>
-<div class="table-wrapper" id="eveningWrap">
 <table id="eveningTable">
 <thead>
 <tr>
-    <th class="num-col">#</th>
-    <th class="name-col">الاسم</th>
-    <th class="loc-col">الموقع</th>
+<th class="num-col">#</th>
+<th class="name-col">الاسم</th>
+<th class="loc-col">الموقع</th>
+<th class="sign-col">التوقيع</th>
 </tr>
 </thead>
 <tbody></tbody>
 </table>
-</div>
 
 </div>
 
 <!-- ===== الفوتر ===== -->
 <div class="footer">
-<div class="center-totals">
-    مجموع الصباح: <span id="morningTotal">0</span> |
-    مجموع المساء: <span id="eveningTotal">0</span> |
-    المجموع الكلي: <span id="grandTotal">0</span>
-</div>
+    <div class="center-totals">
+        صباح: <span id="morningTotal">0</span> |
+        مساء: <span id="eveningTotal">0</span> |
+        الإجمالي: <span id="grandTotal">0</span>
+    </div>
 
-<div class="signatures">
-    <div>مسؤول العلاقات العامة<br>سلمان الحمود</div>
-    <div>مدير المشروع<br>سالم الشمري</div>
-</div>
+    <div class="signatures">
+        <div>مسؤول العلاقات العامة<br>سلمان الحمود</div>
+        <div>مدير المشروع<br>سالم الشمري</div>
+    </div>
 </div>
 
 <script>
@@ -231,16 +234,18 @@ const locations = `
 <option>فاليه ٣ - فحص</option>
 `;
 
-function createRows(id, count){
-    const tb = document.querySelector(`#${id} tbody`);
+function createRows(id,count){
+    const tb=document.querySelector(`#${id} tbody`);
     for(let i=1;i<=count;i++){
-        tb.innerHTML += `
-        <tr>
-            <td>${i}</td>
-            <td><input oninput="calc()"></td>
-            <td><select onchange="calc()">${locations}</select></td>
-        </tr>`;
+        tb.innerHTML+=`
+<tr>
+<td>${i}</td>
+<td><input oninput="calc()"></td>
+<td><select onchange="calc()">${locations}</select></td>
+<td><canvas></canvas></td>
+</tr>`;
     }
+    initCanvas();
 }
 
 function calc(){
@@ -256,85 +261,65 @@ function calc(){
     grandTotal.textContent=m+e;
 }
 
-function clearData(){
-    document.querySelectorAll("input").forEach(i=>i.value="");
-    document.querySelectorAll("select").forEach(s=>s.selectedIndex=0);
-    calc();
-}
-
 function setMode(mode){
-    morningWrap.style.display = (mode==="evening")?"none":"block";
+    morningTable.style.display = (mode==="evening")?"none":"table";
     morningTitle.style.display = (mode==="evening")?"none":"block";
-    eveningWrap.style.display = (mode==="morning")?"none":"block";
+    eveningTable.style.display = (mode==="morning")?"none":"table";
     eveningTitle.style.display = (mode==="morning")?"none":"block";
 }
 
-/* ===== تعديل التاريخ ===== */
 function toggleDate(){
-    const input = document.getElementById("customDate");
-    input.style.display = (input.style.display==="none")?"inline-block":"none";
+    customDate.style.display =
+    customDate.style.display==="none"?"inline-block":"none";
 }
 
 function applyDate(){
-    const input = document.getElementById("customDate");
-    if(!input.value) return;
-    const d = new Date(input.value);
-    document.getElementById("dateTime").textContent = formatDateTime(d);
-    input.style.display="none";
+    const d=new Date(customDate.value);
+    dateTime.textContent=d.toLocaleString('en-GB',{
+        weekday:'long',day:'2-digit',month:'long',year:'numeric',
+        hour:'2-digit',minute:'2-digit'
+    });
+    customDate.style.display="none";
 }
 
-/* ===== تعديل الوقت فقط ===== */
-function toggleTime(){
-    const picker = document.getElementById("timePicker");
-    picker.style.display = (picker.style.display==="none")?"block":"none";
-}
-
-function applyCustomTime(){
-    const hour = parseInt(document.getElementById("hour").value) || 0;
-    const minute = parseInt(document.getElementById("minute").value) || 0;
-    const ampm = document.getElementById("ampm").value;
-
-    let h = hour;
-    if(ampm==="PM" && hour<12) h+=12;
-    if(ampm==="AM" && hour===12) h=0;
-
-    const now = new Date();
-    now.setHours(h,minute);
-
-    document.getElementById("dateTime").textContent = formatDateTime(now);
-}
-
-/* ===== تنسيق التاريخ + الوقت ===== */
-function formatDateTime(d){
-    return d.toLocaleDateString('en-GB', {
-        weekday:'long', day:'2-digit', month:'long', year:'numeric'
-    }) + " | " +
-    d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', hour12:true});
-}
-
-/* ===== تصدير Excel مع UTF-8 ===== */
 function exportExcel(){
-    let csv = "\uFEFFالفترة,الرقم,الاسم,الموقع\n"; // BOM utf-8
+    let csv="\uFEFFالفترة,الرقم,الاسم,الموقع\n";
     document.querySelectorAll("#morningTable tbody tr").forEach((r,i)=>{
-        csv += `صباح,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
+        csv+=`صباح,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
     });
     document.querySelectorAll("#eveningTable tbody tr").forEach((r,i)=>{
-        csv += `مساء,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
+        csv+=`مساء,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
     });
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "attendance.csv";
+    const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+    const link=document.createElement("a");
+    link.href=URL.createObjectURL(blob);
+    link.download="attendance.csv";
     link.click();
 }
 
-/* التاريخ الافتراضي */
-const now = new Date();
-document.getElementById("dateTime").textContent = formatDateTime(now);
+function initCanvas(){
+    document.querySelectorAll("canvas").forEach(c=>{
+        const ctx=c.getContext("2d");
+        let draw=false;
+        c.onmousedown=()=>draw=true;
+        c.onmouseup=()=>{draw=false;ctx.beginPath();}
+        c.onmousemove=e=>{
+            if(!draw) return;
+            ctx.lineWidth=1;
+            ctx.lineTo(e.offsetX,e.offsetY);
+            ctx.stroke();
+        };
+    });
+}
 
-/* إنشاء الصفوف */
+dateTime.textContent=new Date().toLocaleString('en-GB',{
+weekday:'long',day:'2-digit',month:'long',year:'numeric',
+hour:'2-digit',minute:'2-digit'
+});
+
 createRows("morningTable",19);
 createRows("eveningTable",10);
+calc();
 </script>
 
 </body>
