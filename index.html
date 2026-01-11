@@ -59,6 +59,7 @@ td[contenteditable]{cursor:text;}
 
 /* SUMMARY */
 /* FOOTER */
+/* FOOTER */
 .footer{
     margin-top:25px;
 }
@@ -66,24 +67,28 @@ td[contenteditable]{cursor:text;}
 .signature-container{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    width:100%;
 }
 
 .signature{
     border:1px solid #000;
     padding:10px;
     height:65px;
-    width:45%;
+    width:230px; /* حجم ثابت عشان يلتصق بالزاوية */
     font-weight:bold;
     line-height:1.8;
 }
 
+/* الزاوية اليمين */
 .signature.right{
     text-align:right;
+    margin-right:0;
 }
 
+/* الزاوية اليسار */
 .signature.left{
     text-align:left;
+    margin-left:0;
 }
 @media print{
     body{background:none;}
