@@ -60,8 +60,10 @@ td[contenteditable]{cursor:text;}
 /* SUMMARY */
 /* FOOTER */
 /* FOOTER */
+/* FIX FOOTER ONLY */
 .footer{
     margin-top:25px;
+    direction:ltr; /* عزل الفوتر */
 }
 
 .signature-container{
@@ -74,21 +76,21 @@ td[contenteditable]{cursor:text;}
     border:1px solid #000;
     padding:10px;
     height:65px;
-    width:230px; /* حجم ثابت عشان يلتصق بالزاوية */
+    width:230px;
     font-weight:bold;
     line-height:1.8;
 }
 
-/* الزاوية اليمين */
+/* يمين الصفحة */
 .signature.right{
+    direction:rtl;
     text-align:right;
-    margin-right:0;
 }
 
-/* الزاوية اليسار */
+/* يسار الصفحة */
 .signature.left{
+    direction:rtl;
     text-align:left;
-    margin-left:0;
 }
 @media print{
     body{background:none;}
