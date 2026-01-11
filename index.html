@@ -2,324 +2,244 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>التحضير اليومي</title>
+<title>جدول الحضور اليومي</title>
 
 <style>
-@page { size: A4; margin: 8mm; }
-
-/* ===== هيكل الصفحة ===== */
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
 body {
-    font-family: "Tahoma","Arial","Segoe UI",sans-serif;
-    display: grid;
-    grid-template-rows: auto 1fr auto; /* header | content | footer */
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    font-family: Tahoma, Arial;
+    background: #eaeaea;
+    padding: 20px;
 }
-
-/* ===== الهيدر ===== */
+.page {
+    width: 210mm;
+    background: #fff;
+    margin: auto;
+    padding: 15px;
+    border: 1px solid #bbb;
+}
 .header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
+    border-bottom: 6px solid #c7a35a;
+    padding-bottom: 10px;
 }
-
-.logo-box img {
-    height: 75px;
-}
-
-/* ===== العناوين ===== */
-h2 {
-    text-align: center;
-    margin: 2px 0;
-    font-size: 15px;
-    font-weight: bold;
-}
-
-h3 {
-    text-align: center;
-    margin: 2px 0;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.date {
+.header img { height: 65px; }
+.header .center {
     text-align: center;
     font-weight: bold;
-    font-size: 11px;
-    margin-bottom: 3px;
+    line-height: 1.6;
 }
-
-/* ===== الأدوات ===== */
-.controls {
-    text-align: center;
-    margin: 4px 0;
-}
-
-.controls button {
-    padding: 3px 6px;
-    margin: 2px;
-    font-size: 10px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* ===== منطقة المحتوى (الجدول) ===== */
-.content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* ⬅️ توسيط عمودي */
-}
-
-/* ===== الجدول ===== */
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    margin-top: 15px;
+    font-size: 13px;
 }
-
 th, td {
     border: 1px solid #000;
-    font-size: 9.5px;
-    font-weight: 600;
-    height: 13px;
-    text-align: center;
-    padding: 0;
-}
-
-th {
-    background: #eaeaea !important;
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.num-col  { width: 5%; }
-.name-col { width: 28%; }
-.loc-col  { width: 27%; }
-.sign-col { width: 40%; }
-
-input, select {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    font-size: 9.5px;
-    font-weight: 600;
+    padding: 5px;
     text-align: center;
 }
-
-/* ===== التوقيع ===== */
-canvas {
-    width: 100%;
-    height: 18px;
-    border: 1px dashed #000;
+.morning th { background: #ffe699; }
+.evening th { background: #cfe2f3; }
+.count-cell {
+    background: #ffd966;
+    font-weight: bold;
+    font-size: 15px;
 }
-
-/* ===== الألوان ===== */
-#morningTable tbody td { background: #fff6cc !important; }
-#eveningTable tbody td { background: #e6f2ff !important; }
-
-/* ===== الفوتر ===== */
+td.name {
+    background: #fffbe6;
+}
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+.box {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+.box span {
+    display: block;
+    margin-top: 5px;
+    font-size: 18px;
+}
 .footer {
-    font-size: 10px;
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
-
-.center-totals {
+.signature {
+    border: 1px solid #000;
+    padding: 10px;
+    height: 65px;
     text-align: center;
     font-weight: bold;
-    margin: 3px 0;
 }
-
-.signatures {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-}
-
-/* ===== طباعة ===== */
-@media print {
-    .controls { display:none; }
-}
+@media print { body { background: none; } }
 </style>
 </head>
 
 <body>
+<div class="page">
 
-<!-- ===== الهيدر ===== -->
-<div>
-    <div class="header">
-        <div class="logo-box"><img src="majdoul.png"></div>
-        <div class="logo-box"><img src="linkexpert.png"></div>
+<!-- HEADER -->
+<div class="header">
+    <img src="logo-left.png">
+    <div class="center">
+        شركة LINK EXPERT<br>
+        جدول الحضور اليومي<br>
+        <input type="date">
     </div>
-    <h2>التحضير اليومي</h2>
-    <div class="date" id="dateTime"></div>
-
-    <div class="controls">
-        <button onclick="window.print()">🖨️ PDF</button>
-        <button onclick="exportExcel()">📊 Excel</button>
-        <button onclick="clearData()">🗑️ مسح</button>
-        <button onclick="setMode('morning')">☀️ صباح</button>
-        <button onclick="setMode('evening')">🌙 مساء</button>
-        <button onclick="setMode('all')">📋 كامل</button>
-        <button onclick="toggleDate()">🕒 تعديل التاريخ</button>
-    </div>
+    <img src="logo-right.png">
 </div>
 
-<input type="datetime-local" id="customDate" onchange="applyDate()" style="display:none;">
-
-<!-- ===== المحتوى ===== -->
-<div class="content">
-
-<h3 id="morningTitle">تحضير الصباح</h3>
-<table id="morningTable">
-<thead>
+<!-- MORNING -->
+<table class="morning">
 <tr>
-<th class="num-col">#</th>
-<th class="name-col">الاسم</th>
-<th class="loc-col">الموقع</th>
-<th class="sign-col">التوقيع</th>
+<th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th><th>حضور</th>
 </tr>
-</thead>
-<tbody></tbody>
+
+<script>
+const morningJobs = [
+"مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2",
+"فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5",
+"منظم مواقف P1","منظم مواقف P1","منظم مواقف P1",
+"منظم مواقف P2","منظم مواقف P2","منظم مواقف P2",
+"منظم مواقف P3","منظم مواقف P4",
+"مسؤول الشحن A","مسؤول الشحن P2"
+];
+
+morningJobs.forEach((job,i)=>{
+document.write(`
+<tr>
+<td>${i+1}</td>
+<td>${job}</td>
+<td class="name" contenteditable></td>
+<td>7ص–7م</td>
+<td><input type="checkbox" class="morning-check"></td>
+</tr>`);
+});
+</script>
+
+<tr>
+<td colspan="4">عدد الحضور صباحًا</td>
+<td class="count-cell" id="morningCount">0</td>
+</tr>
 </table>
 
-<h3 id="eveningTitle">تحضير المساء</h3>
-<table id="eveningTable">
-<thead>
+<!-- EVENING -->
+<table class="evening">
 <tr>
-<th class="num-col">#</th>
-<th class="name-col">الاسم</th>
-<th class="loc-col">الموقع</th>
-<th class="sign-col">التوقيع</th>
+<th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th><th>حضور</th>
 </tr>
-</thead>
-<tbody></tbody>
+
+<script>
+const eveningJobs = [
+"تغطيات","فاليه 1","فاليه 2","منظم بوابة 3",
+"منظم مواقف P1","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4",
+"مسؤول الشحن A","مسؤول الشحن P2"
+];
+
+eveningJobs.forEach((job,i)=>{
+document.write(`
+<tr>
+<td>${i+1}</td>
+<td>${job}</td>
+<td class="name" contenteditable></td>
+<td>7م–7ص</td>
+<td><input type="checkbox" class="evening-check"></td>
+</tr>`);
+});
+</script>
+
+<tr>
+<td colspan="4">عدد الحضور مساءً</td>
+<td class="count-cell" id="eveningCount">0</td>
+</tr>
 </table>
 
+<!-- SUMMARY -->
+<div class="summary">
+<div class="box">صباح<span id="sumMorning">0</span></div>
+<div class="box">مساء<span id="sumEvening">0</span></div>
+<div class="box">المجموع<span id="total">0</span></div>
 </div>
 
-<!-- ===== الفوتر ===== -->
+<!-- FOOTER -->
 <div class="footer">
-    <div class="center-totals">
-        صباح: <span id="morningTotal">0</span> |
-        مساء: <span id="eveningTotal">0</span> |
-        الإجمالي: <span id="grandTotal">0</span>
-    </div>
+<div class="signature">
+مسؤول العلاقات العامة بالبرج
+سلمان الحمود <br>
+<span id="signatureName">—</span>
+</div>
 
-    <div class="signatures">
-        <div>مسؤول العلاقات العامة<br>سلمان الحمود</div>
-        <div>مدير المشروع<br>سالم الشمري</div>
-    </div>
+<div class="signature">
+مدير العمليات<br>
+سالم الشهري
+</div>
+</div>
+
 </div>
 
 <script>
-const locations = `
-<option value="">— اختر —</option>
-<option>متحرك</option>
-<option>تغطيات</option>
-<option>منظم مواقف P1</option>
-<option>منظم مواقف P2</option>
-<option>منظم مواقف P3</option>
-<option>منظم مواقف P4</option>
-<option>منظم بوابة 3</option>
-<option>منظم بوابة 5</option>
-<option>منطقة الشحن A</option>
-<option>منطقة الشحن P2</option>
-<option>فاليه ١</option>
-<option>فاليه ٢</option>
-<option>فاليه ٣ - فحص</option>
-`;
-
-function createRows(id,count){
-    const tb=document.querySelector(`#${id} tbody`);
-    for(let i=1;i<=count;i++){
-        tb.innerHTML+=`
-<tr>
-<td>${i}</td>
-<td><input oninput="calc()"></td>
-<td><select onchange="calc()">${locations}</select></td>
-<td><canvas></canvas></td>
-</tr>`;
-    }
-    initCanvas();
+function calculate(){
+const m=document.querySelectorAll('.morning-check:checked').length;
+const e=document.querySelectorAll('.evening-check:checked').length;
+morningCount.innerText=sumMorning.innerText=m;
+eveningCount.innerText=sumEvening.innerText=e;
+total.innerText=m+e;
 }
+document.addEventListener('change',calculate);
 
-function calc(){
-    let m=0,e=0;
-    document.querySelectorAll("#morningTable tbody tr").forEach(r=>{
-        if(r.querySelector("input").value && r.querySelector("select").value) m++;
-    });
-    document.querySelectorAll("#eveningTable tbody tr").forEach(r=>{
-        if(r.querySelector("input").value && r.querySelector("select").value) e++;
-    });
-    morningTotal.textContent=m;
-    eveningTotal.textContent=e;
-    grandTotal.textContent=m+e;
+document.querySelectorAll('.name').forEach(cell=>{
+cell.addEventListener('input',()=>{
+if(cell.innerText.trim()!==""){
+signatureName.innerText=cell.innerText.trim();
 }
-
-function setMode(mode){
-    morningTable.style.display = (mode==="evening")?"none":"table";
-    morningTitle.style.display = (mode==="evening")?"none":"block";
-    eveningTable.style.display = (mode==="morning")?"none":"table";
-    eveningTitle.style.display = (mode==="morning")?"none":"block";
-}
-
-function toggleDate(){
-    customDate.style.display =
-    customDate.style.display==="none"?"inline-block":"none";
-}
-
-function applyDate(){
-    const d=new Date(customDate.value);
-    dateTime.textContent=d.toLocaleString('en-GB',{
-        weekday:'long',day:'2-digit',month:'long',year:'numeric',
-        hour:'2-digit',minute:'2-digit'
-    });
-    customDate.style.display="none";
-}
-
-function exportExcel(){
-    let csv="\uFEFFالفترة,الرقم,الاسم,الموقع\n";
-    document.querySelectorAll("#morningTable tbody tr").forEach((r,i)=>{
-        csv+=`صباح,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
-    });
-    document.querySelectorAll("#eveningTable tbody tr").forEach((r,i)=>{
-        csv+=`مساء,${i+1},${r.querySelector("input").value},${r.querySelector("select").value}\n`;
-    });
-    const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
-    const link=document.createElement("a");
-    link.href=URL.createObjectURL(blob);
-    link.download="attendance.csv";
-    link.click();
-}
-
-function initCanvas(){
-    document.querySelectorAll("canvas").forEach(c=>{
-        const ctx=c.getContext("2d");
-        let draw=false;
-        c.onmousedown=()=>draw=true;
-        c.onmouseup=()=>{draw=false;ctx.beginPath();}
-        c.onmousemove=e=>{
-            if(!draw) return;
-            ctx.lineWidth=1;
-            ctx.lineTo(e.offsetX,e.offsetY);
-            ctx.stroke();
-        };
-    });
-}
-
-dateTime.textContent=new Date().toLocaleString('en-GB',{
-weekday:'long',day:'2-digit',month:'long',year:'numeric',
-hour:'2-digit',minute:'2-digit'
 });
+});
+</script>
 
-createRows("morningTable",19);
-createRows("eveningTable",10);
-calc();
+<style>
+.export-btn {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    background: #c7a35a;
+    color: #000;
+    border: none;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 9999;
+}
+.export-btn:hover {
+    background: #b08d4d;
+}
+@media print {
+    .export-btn {
+        display: none;
+    }
+}
+</style>
+
+<button class="export-btn" onclick="exportPDF()">
+📄 تصدير PDF
+</button>
+
+<script>
+function exportPDF() {
+    window.print();
+}
 </script>
 
 </body>
