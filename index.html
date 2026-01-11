@@ -5,83 +5,109 @@
 <title>جدول الحضور اليومي</title>
 
 <style>
-body {
-    font-family: Tahoma, Arial;
-    background: #eaeaea;
-    padding: 20px;
+body{
+    font-family:Tahoma,Arial;
+    background:#eaeaea;
+    padding:20px;
 }
-.page {
-    width: 210mm;
-    background: #fff;
-    margin: auto;
-    padding: 15px;
-    border: 1px solid #bbb;
+.page{
+    width:210mm;
+    background:#fff;
+    margin:auto;
+    padding:15px;
+    border:1px solid #bbb;
 }
-.header {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    align-items: center;
-    border-bottom: 6px solid #c7a35a;
-    padding-bottom: 10px;
+
+/* HEADER */
+.header{
+    display:grid;
+    grid-template-columns:1fr 2fr 1fr;
+    align-items:center;
+    border-bottom:6px solid #c7a35a;
+    padding-bottom:10px;
 }
-.header img { height: 65px; }
-.header .center {
-    text-align: center;
-    font-weight: bold;
-    line-height: 1.6;
+.header img{
+    height:65px;
 }
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 13px;
+.header .center{
+    text-align:center;
+    font-weight:bold;
+    line-height:1.6;
 }
-th, td {
-    border: 1px solid #000;
-    padding: 5px;
-    text-align: center;
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+    font-size:13px;
 }
-.morning th { background: #ffe699; }
-.evening th { background: #cfe2f3; }
-.count-cell {
-    background: #ffd966;
-    font-weight: bold;
-    font-size: 15px;
+th,td{
+    border:1px solid #000;
+    padding:5px;
+    text-align:center;
 }
-td.name {
-    background: #fffbe6;
+.morning th{background:#ffe699;}
+.evening th{background:#cfe2f3;}
+.count-cell{
+    background:#ffd966;
+    font-weight:bold;
+    font-size:15px;
 }
-.summary {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 10px;
-    margin-top: 20px;
+td.name{background:#fffbe6;}
+td[contenteditable]{cursor:text;}
+
+/* SUMMARY */
+.summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:20px;
 }
-.box {
-    border: 1px solid #000;
-    padding: 10px;
-    text-align: center;
-    font-weight: bold;
+.box{
+    border:1px solid #000;
+    padding:10px;
+    text-align:center;
+    font-weight:bold;
 }
-.box span {
-    display: block;
-    margin-top: 5px;
-    font-size: 18px;
+.box span{
+    display:block;
+    margin-top:5px;
+    font-size:18px;
 }
-.footer {
-    margin-top: 25px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+
+/* FOOTER */
+.footer{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
 }
-.signature {
-    border: 1px solid #000;
-    padding: 10px;
-    height: 65px;
-    text-align: center;
-    font-weight: bold;
+.signature{
+    border:1px solid #000;
+    padding:10px;
+    height:65px;
+    text-align:center;
+    font-weight:bold;
 }
-@media print { body { background: none; } }
+
+.export-btn{
+    position:fixed;
+    bottom:25px;
+    left:25px;
+    background:#c7a35a;
+    border:none;
+    padding:12px 22px;
+    font-size:15px;
+    font-weight:bold;
+    border-radius:6px;
+    cursor:pointer;
+    z-index:9999;
+}
+@media print{
+    body{background:none;}
+    .export-btn{display:none;}
+}
 </style>
 </head>
 
@@ -89,20 +115,14 @@ td.name {
 <div class="page">
 
 <!-- HEADER -->
-<!-- HEADER -->
 <div class="header">
-    <!-- RIGHT LOGO -->
-    <img src="majdoul.png" alt="Majdoul Logo">
-
-    <!-- CENTER TITLE -->
+    <img src="majdoul.png" alt="Majdoul">
     <div class="center">
         شركة LINK EXPERT<br>
         جدول الحضور اليومي<br>
         <input type="date">
     </div>
-
-    <!-- LEFT LOGO -->
-    <img src="linkexpert.png" alt="Link Expert Logo">
+    <img src="linkexpert.png" alt="Link Expert">
 </div>
 
 <!-- MORNING -->
@@ -111,27 +131,26 @@ td.name {
 <th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th><th>حضور</th>
 </tr>
 
-<script>
-const morningJobs = [
-"مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2",
-"فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5",
-"منظم مواقف P1","منظم مواقف P1","منظم مواقف P1",
-"منظم مواقف P2","منظم مواقف P2","منظم مواقف P2",
-"منظم مواقف P3","منظم مواقف P4",
-"مسؤول الشحن A","مسؤول الشحن P2"
-];
-
-morningJobs.forEach((job,i)=>{
-document.write(`
-<tr>
-<td>${i+1}</td>
-<td>${job}</td>
-<td class="name" contenteditable></td>
-<td>7ص–7م</td>
-<td><input type="checkbox" class="morning-check"></td>
-</tr>`);
-});
-</script>
+<!-- 19 ROWS -->
+<tr><td>1</td><td>مدير المواقف</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>2</td><td>تغطيات</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>3</td><td>تغطيات</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>4</td><td>فاليه 1</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>5</td><td>فاليه 1</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>6</td><td>فاليه 2</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>7</td><td>فاليه 3 - فحص</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>8</td><td>منظم بوابة 3</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>9</td><td>منظم بوابة 5</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>10</td><td>منظم مواقف P1</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>11</td><td>منظم مواقف P1</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>12</td><td>منظم مواقف P1</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>13</td><td>منظم مواقف P2</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>14</td><td>منظم مواقف P2</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>15</td><td>منظم مواقف P2</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>16</td><td>منظم مواقف P3</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>17</td><td>منظم مواقف P4</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>18</td><td>مسؤول الشحن A</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
+<tr><td>19</td><td>مسؤول الشحن P2</td><td class="name" contenteditable></td><td>7ص–7م</td><td><input type="checkbox" class="morning-check"></td></tr>
 
 <tr>
 <td colspan="4">عدد الحضور صباحًا</td>
@@ -145,24 +164,16 @@ document.write(`
 <th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th><th>حضور</th>
 </tr>
 
-<script>
-const eveningJobs = [
-"تغطيات","فاليه 1","فاليه 2","منظم بوابة 3",
-"منظم مواقف P1","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4",
-"مسؤول الشحن A","مسؤول الشحن P2"
-];
-
-eveningJobs.forEach((job,i)=>{
-document.write(`
-<tr>
-<td>${i+1}</td>
-<td>${job}</td>
-<td class="name" contenteditable></td>
-<td>7م–7ص</td>
-<td><input type="checkbox" class="evening-check"></td>
-</tr>`);
-});
-</script>
+<tr><td>1</td><td>تغطيات</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>2</td><td>فاليه 1</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>3</td><td>فاليه 2</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>4</td><td>منظم بوابة 3</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>5</td><td>منظم مواقف P1</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>6</td><td>منظم مواقف P2</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>7</td><td>منظم مواقف P3</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>8</td><td>منظم مواقف P4</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>9</td><td>مسؤول الشحن A</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
+<tr><td>10</td><td>مسؤول الشحن P2</td><td class="name" contenteditable></td><td>7م–7ص</td><td><input type="checkbox" class="evening-check"></td></tr>
 
 <tr>
 <td colspan="4">عدد الحضور مساءً</td>
@@ -180,11 +191,9 @@ document.write(`
 <!-- FOOTER -->
 <div class="footer">
 <div class="signature">
-مسؤول العلاقات العامة بالبرج
-سلمان الحمود <br>
+مسؤول العلاقات العامة بالبرج<br>
 <span id="signatureName">—</span>
 </div>
-
 <div class="signature">
 مدير العمليات<br>
 سالم الشهري
@@ -193,59 +202,25 @@ document.write(`
 
 </div>
 
+<button class="export-btn" onclick="window.print()">📄 تصدير PDF</button>
+
 <script>
-function calculate(){
+function calc(){
 const m=document.querySelectorAll('.morning-check:checked').length;
 const e=document.querySelectorAll('.evening-check:checked').length;
 morningCount.innerText=sumMorning.innerText=m;
 eveningCount.innerText=sumEvening.innerText=e;
 total.innerText=m+e;
 }
-document.addEventListener('change',calculate);
+document.addEventListener('change',calc);
 
-document.querySelectorAll('.name').forEach(cell=>{
-cell.addEventListener('input',()=>{
-if(cell.innerText.trim()!==""){
-signatureName.innerText=cell.innerText.trim();
+document.querySelectorAll('.name').forEach(c=>{
+c.addEventListener('input',()=>{
+if(c.innerText.trim()!==""){
+signatureName.innerText=c.innerText.trim();
 }
 });
 });
-</script>
-
-<style>
-.export-btn {
-    position: fixed;
-    bottom: 25px;
-    left: 25px;
-    background: #c7a35a;
-    color: #000;
-    border: none;
-    padding: 12px 22px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    z-index: 9999;
-}
-.export-btn:hover {
-    background: #b08d4d;
-}
-@media print {
-    .export-btn {
-        display: none;
-    }
-}
-</style>
-
-<button class="export-btn" onclick="exportPDF()">
-📄 تصدير PDF
-</button>
-
-<script>
-function exportPDF() {
-    window.print();
-}
 </script>
 
 </body>
