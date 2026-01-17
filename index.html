@@ -5,20 +5,6 @@
 <title>جدول الحضور اليومي</title>
 
 <style>
-    @media print{
-    #dateInput{
-        display:none;
-    }
-    #dateDisplay{
-        display:block;
-    }
-}
-#dateDisplay{
-    margin-top:6px;
-    font-size:14px;
-    font-weight:normal;
-}    
-}
 body{font-family:Tahoma;background:#eaeaea;padding:20px}
 .page{width:210mm;margin:auto;background:#fff;padding:15px;border:1px solid #bbb}
 
@@ -32,6 +18,9 @@ padding-bottom:10px
 }
 .header img{height:90px}
 .center{text-align:center;font-weight:bold}
+
+/* DATE DISPLAY */
+#dateDisplay{margin-top:5px;font-size:14px;font-weight:normal}
 
 /* TABLE */
 table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
@@ -75,6 +64,8 @@ font-weight:bold;border:none;border-radius:6px;cursor:pointer
 @media print{
 .export-btn{display:none}
 tr.empty{display:none}
+#dateInput{display:none}
+#dateDisplay{display:block}
 }
 </style>
 </head>
@@ -84,20 +75,19 @@ tr.empty{display:none}
 
 <!-- HEADER -->
 <div class="header">
-<img src="majdoul.png">
+<img src="linkexpert.png">
 <div class="center">
 شركة LINK EXPERT<br>
 جدول الحضور اليومي<br>
 <input type="date" id="dateInput" onchange="showDay()">
 <div id="dateDisplay"></div>
 </div>
-<img src="linkexpert.png">
+<img src="majdoul.png">
 </div>
 
 <!-- MORNING -->
 <table class="morning">
 <tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
-
 <script>
 const morningJobs=[
 "مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2",
@@ -108,37 +98,30 @@ const morningJobs=[
 "مسؤول الشحن A","مسؤول الشحن P2"
 ];
 morningJobs.forEach((j,i)=>{
-document.write(`
-<tr class="empty morning-row">
+document.write(`<tr class="empty morning-row">
 <td>${i+1}</td><td>${j}</td>
-<td class="name morning-name" contenteditable></td>
-<td>7ص–7م</td>
+<td class="name morning-name" contenteditable></td><td>7ص–7م</td>
 </tr>`);
 });
 </script>
-
 <tr><td colspan="3">صباح (من 19)</td><td class="count-cell" id="mCount">0</td></tr>
 </table>
 
 <!-- EVENING -->
 <table class="evening">
 <tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
-
 <script>
 const eveningJobs=[
 "تغطيات","فاليه 1","فاليه 2","منظم بوابة 3","منظم بوابة 5",
 "مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"
 ];
 eveningJobs.forEach((j,i)=>{
-document.write(`
-<tr class="empty evening-row">
+document.write(`<tr class="empty evening-row">
 <td>${i+1}</td><td>${j}</td>
-<td class="name evening-name" contenteditable></td>
-<td>7م–7ص</td>
+<td class="name evening-name" contenteditable></td><td>7م–7ص</td>
 </tr>`);
 });
 </script>
-
 <tr><td colspan="3">مساء (من 9)</td><td class="count-cell" id="eCount">0</td></tr>
 </table>
 
@@ -157,111 +140,85 @@ document.write(`
 
 </div>
 
-<button class="export-btn pdf" onclick="printPDF()">📄 تصدير PDF</button>
-
-<script>
-function printPDF(){
-    window.focus();
-    window.print();
-}
-</script>
+<!-- BUTTONS -->
+<button class="export-btn pdf" onclick="window.print()">📄 PDF</button>
 <button class="export-btn excel" onclick="exportExcel()">📊 Excel</button>
+
 <script>
-// تنظيف النص
-function cleanName(txt){
-    return txt.replace(/\s+/g," ").trim();
+// تنظيف الاسم
+function cleanName(txt){return txt.replace(/\s+/g,' ').trim();}
+
+// التاريخ
+function showDay(){
+    const input=document.getElementById("dateInput");
+    const display=document.getElementById("dateDisplay");
+    if(!input.value){ display.innerText=""; return; }
+    const date=new Date(input.value);
+    const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    display.innerText=`${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-// جمع كل الأسماء
-function allNames(){
-    return [...document.querySelectorAll('.name')]
-        .map(c=>cleanName(c.innerText))
-        .filter(n=>n!=="");
-}
-
-// حساب المجموع الصحيح
+// حساب المجموع
 function calc(){
-    const morningCells = [...document.querySelectorAll('.morning-name')];
-    const eveningCells = [...document.querySelectorAll('.evening-name')];
+    const morningCells=Array.from(document.querySelectorAll('.morning-name'));
+    const eveningCells=Array.from(document.querySelectorAll('.evening-name'));
 
-    const m = morningCells.filter(c=>cleanName(c.innerText)!=="").length;
-    const e = eveningCells.filter(c=>cleanName(c.innerText)!=="").length;
+    const m=morningCells.filter(c=>cleanName(c.innerText)!=="").length;
+    const e=eveningCells.filter(c=>cleanName(c.innerText)!=="").length;
 
-    document.getElementById("mCount").innerText = m;
-    document.getElementById("eCount").innerText = e;
-
-    document.getElementById("sm").innerText = `${m} / 19`;
-    document.getElementById("se").innerText = `${e} / 9`;
-    document.getElementById("st").innerText = `${m+e} / 28`;
+    document.getElementById("mCount").innerText=m;
+    document.getElementById("eCount").innerText=e;
+    document.getElementById("sm").innerText=`${m} / 19`;
+    document.getElementById("se").innerText=`${e} / 9`;
+    document.getElementById("st").innerText=`${m+e} / 28`;
 }
 
-// إدارة الإدخال وتلوين الصفوف ومنع التكرار
-document.addEventListener('input', e=>{
-    if(!e.target.classList.contains('name')) return;
+// منع التكرار وتلوين الصفوف
+document.querySelectorAll('.name').forEach(cell=>{
+    cell.addEventListener('input',()=>{
+        const row=cell.closest('tr');
+        const name=cleanName(cell.innerText);
 
-    const cell = e.target;
-    const row = cell.closest('tr');
-    const name = cleanName(cell.innerText);
+        if(name){
+            const names=Array.from(document.querySelectorAll('.name'))
+                .map(c=>cleanName(c.innerText)).filter(n=>n!=="");
+            if(names.filter(n=>n===name).length>1){
+                alert("⚠️ الاسم مكرر");
+                cell.innerText="";
+                row.classList.remove('morning-filled','evening-filled');
+                row.classList.add('empty');
+                calc();
+                return;
+            }
 
-    if(name){
-        const names = allNames();
-        if(names.filter(n=>n===name).length > 1){
-            alert("⚠️ الاسم مكرر");
-            cell.innerText = "";
-            row.classList.remove("morning-filled","evening-filled");
-            row.classList.add("empty");
-            calc();
-            return;
+            row.classList.remove('empty','morning-filled','evening-filled');
+            if(cell.classList.contains('morning-name')) row.classList.add('morning-filled');
+            if(cell.classList.contains('evening-name')) row.classList.add('evening-filled');
+
+        } else {
+            row.classList.remove('morning-filled','evening-filled');
+            row.classList.add('empty');
         }
 
-        row.classList.remove("empty","morning-filled","evening-filled");
-        if(cell.classList.contains("morning-name")) row.classList.add("morning-filled");
-        if(cell.classList.contains("evening-name")) row.classList.add("evening-filled");
-
-    } else {
-        row.classList.remove("morning-filled","evening-filled");
-        row.classList.add("empty");
-    }
-
-    calc();
+        calc();
+    });
 });
 
-/* Excel CSV */
+// Excel CSV
 function exportExcel(){
-let rows=[];
-document.querySelectorAll("table tr").forEach(tr=>{
-if(tr.classList.contains("empty"))return;
-rows.push([...tr.children].map(td=>`"${td.innerText.trim()}"`).join(","));
-});
-const blob=new Blob(["\ufeff"+rows.join("\n")],{type:"text/xlsx;charset=utf-8"});
-const a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="attendance.csv";
-a.click();
+    let rows=[];
+    document.querySelectorAll("table tr").forEach(tr=>{
+        if(tr.classList.contains("empty")) return;
+        rows.push([...tr.children].map(td=>`"${td.innerText.trim()}"`).join(","));
+    });
+    const blob=new Blob(["\ufeff"+rows.join("\n")],{type:"text/csv;charset=utf-8"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="attendance.csv";
+    a.click();
 }
 </script>
-<script>
-function showDay(){
-    const input = document.getElementById("dateInput");
-    const display = document.getElementById("dateDisplay");
 
-    if(!input.value){
-        display.innerText = "";
-        return;
-    }
-
-    const date = new Date(input.value);
-
-    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-    const dayName = days[date.getDay()];
-    const day = date.getDate();
-    const month = months[date.getMonth()];
-    const year = date.getFullYear();
-
-    display.innerText = `${dayName} ${day} ${month} ${year}`;
-}
-</script>
 </body>
 </html>
