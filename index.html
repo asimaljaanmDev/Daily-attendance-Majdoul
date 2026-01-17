@@ -5,10 +5,11 @@
 <title>جدول الحضور اليومي</title>
 
 <style>
-    #dateDisplay{
-    margin-top:5px;
+#dateDisplay{
+    margin-top:6px;
     font-size:14px;
     font-weight:normal;
+}    
 }
 body{font-family:Tahoma;background:#eaeaea;padding:20px}
 .page{width:210mm;margin:auto;background:#fff;padding:15px;border:1px solid #bbb}
@@ -229,23 +230,25 @@ a.click();
 </script>
 <script>
 function showDay(){
-    const input=document.getElementById("dateInput");
-    const display=document.getElementById("dateDisplay");
+    const input = document.getElementById("dateInput");
+    const display = document.getElementById("dateDisplay");
 
     if(!input.value){
-        display.innerText="";
+        display.innerText = "";
         return;
     }
 
-    const date=new Date(input.value);
-    const days=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+    const date = new Date(input.value);
 
-    const dayName=days[date.getDay()];
-    const d=date.getDate();
-    const m=date.getMonth()+1;
-    const y=date.getFullYear();
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-    display.innerText=`${dayName} – ${d} / ${m} / ${y}`;
+    const dayName = days[date.getDay()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+
+    display.innerText = `${dayName} ${day} ${month} ${year}`;
 }
 </script>
 </body>
