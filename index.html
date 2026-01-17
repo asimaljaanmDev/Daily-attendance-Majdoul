@@ -16,16 +16,20 @@ align-items:center;
 border-bottom:6px solid #c7a35a;
 padding-bottom:10px
 }
-.header img{height:120px}
+.header img{height:90px}
 .center{text-align:center;font-weight:bold}
 
-/* TABLES */
+/* TABLE */
 table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
 th,td{border:1px solid #000;padding:6px;text-align:center}
 .morning th{background:#ffe699}
 .evening th{background:#cfe2f3}
 td.name{background:#fffbe6}
 
+/* ROW ACTIVE */
+tr.filled{background:#e6ffe6}
+
+/* COUNT */
 .count-cell{background:#ffd966;font-weight:bold}
 
 /* SUMMARY */
@@ -38,11 +42,7 @@ margin:20px 0
 .box{border:1px solid #000;text-align:center;font-weight:bold;padding:10px}
 
 /* FOOTER */
-.footer{
-display:grid;
-grid-template-columns:1fr 1fr;
-margin-top:25px
-}
+.footer{display:grid;grid-template-columns:1fr 1fr;margin-top:25px}
 .signature{border:1px solid #000;padding:10px;height:70px;font-weight:bold}
 .right{text-align:right}
 .left{text-align:left}
@@ -55,7 +55,14 @@ font-weight:bold;border:none;border-radius:6px;cursor:pointer
 .pdf{bottom:25px;background:#c7a35a}
 .excel{bottom:70px;background:#4CAF50;color:#fff}
 
-@media print{.export-btn{display:none}body{background:none}}
+/* PRINT */
+@page{size:A4;margin:12mm}
+@media print{
+body{background:#fff}
+.page{border:none}
+.export-btn{display:none}
+tr.empty{display:none}
+}
 </style>
 </head>
 
@@ -64,53 +71,67 @@ font-weight:bold;border:none;border-radius:6px;cursor:pointer
 
 <!-- HEADER -->
 <div class="header">
-    <!-- يمين: لينك -->
-    <img src="majdoul.png" alt="Majdoul">
-
-    <!-- الوسط -->
-    <div class="center">
-        شركة LINK EXPERT<br>
-        جدول الحضور اليومي<br>
-        <input type="date" id="attDate">
-    </div>
-
-    <!-- يسار: مجدول -->
-    <img src="linkexpert.png" alt="link">
+<img src="majdoul.png">
+<div class="center">
+شركة LINK EXPERT<br>
+جدول الحضور اليومي<br>
+<input type="date">
+</div>
+<img src="linkexpert.png">
 </div>
 
 <!-- MORNING -->
 <table class="morning">
 <tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
+
 <script>
-const morning=[
+const morningJobs=[
 "مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2",
 "فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5",
 "منظم مواقف P1","منظم مواقف P1","منظم مواقف P1",
 "منظم مواقف P2","منظم مواقف P2","منظم مواقف P2",
-"منظم مواقف P3","منظم مواقف P4","مسؤول الشحن A","مسؤول الشحن P2"
+"منظم مواقف P3","منظم مواقف P4",
+"مسؤول الشحن A","مسؤول الشحن P2"
 ];
-morning.forEach((j,i)=>document.write(
-`<tr><td>${i+1}</td><td>${j}</td>
-<td class="name morning-name" contenteditable></td><td>7ص–7م</td></tr>`
-));
+morningJobs.forEach((j,i)=>{
+document.write(`
+<tr class="empty">
+<td>${i+1}</td><td>${j}</td>
+<td class="name morning-name" contenteditable></td>
+<td>7ص–7م</td>
+</tr>`);
+});
 </script>
-<tr><td colspan="3">صباح (من 19)</td><td class="count-cell" id="mCount">0</td></tr>
+
+<tr>
+<td colspan="3">صباح (من 19)</td>
+<td class="count-cell" id="mCount">0</td>
+</tr>
 </table>
 
 <!-- EVENING -->
 <table class="evening">
 <tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
+
 <script>
-const evening=[
+const eveningJobs=[
 "تغطيات","فاليه 1","فاليه 2","منظم بوابة 3","منظم بوابة 5",
 "مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"
 ];
-evening.forEach((j,i)=>document.write(
-`<tr><td>${i+1}</td><td>${j}</td>
-<td class="name evening-name" contenteditable></td><td>7م–7ص</td></tr>`
-));
+eveningJobs.forEach((j,i)=>{
+document.write(`
+<tr class="empty">
+<td>${i+1}</td><td>${j}</td>
+<td class="name evening-name" contenteditable></td>
+<td>7م–7ص</td>
+</tr>`);
+});
 </script>
-<tr><td colspan="3">مساء (من 9)</td><td class="count-cell" id="eCount">0</td></tr>
+
+<tr>
+<td colspan="3">مساء (من 9)</td>
+<td class="count-cell" id="eCount">0</td>
+</tr>
 </table>
 
 <!-- SUMMARY -->
@@ -129,36 +150,58 @@ evening.forEach((j,i)=>document.write(
 </div>
 
 <button class="export-btn pdf" onclick="window.print()">📄 PDF</button>
-<button class="export-btn excel" onclick="exportCSV()">📊 Excel</button>
+<button class="export-btn excel" onclick="exportExcel()">📊 Excel</button>
 
 <script>
-function hasText(cell){
-return cell.textContent.replace(/\u00A0/g,'').trim().length>0;
+function getNames(){
+return [...document.querySelectorAll('.name')]
+.map(c=>c.innerText.trim())
+.filter(n=>n!=="");
 }
 
 function calc(){
-const m=[...document.querySelectorAll('.morning-name')].filter(hasText).length;
-const e=[...document.querySelectorAll('.evening-name')].filter(hasText).length;
-mCount.innerText=m;eCount.innerText=e;
-sm.innerText=`${m} / 19`;se.innerText=`${e} / 9`;st.innerText=`${m+e} / 28`;
+const m=[...document.querySelectorAll('.morning-name')].filter(c=>c.innerText.trim()).length;
+const e=[...document.querySelectorAll('.evening-name')].filter(c=>c.innerText.trim()).length;
+mCount.innerText=m;
+eCount.innerText=e;
+sm.innerText=`${m} / 19`;
+se.innerText=`${e} / 9`;
+st.innerText=`${m+e} / 28`;
 }
-document.addEventListener('input',calc);
 
-/* CSV EXPORT (Modern Excel) */
-function exportCSV(){
+document.addEventListener('input',e=>{
+if(!e.target.classList.contains('name'))return;
+
+const cell=e.target;
+const row=cell.closest('tr');
+const name=cell.innerText.trim();
+
+if(name){
+const names=getNames();
+if(names.filter(n=>n===name).length>1){
+alert("⚠️ الاسم مكرر");
+cell.innerText="";
+return;
+}
+row.classList.add("filled");
+row.classList.remove("empty");
+}else{
+row.classList.remove("filled");
+row.classList.add("empty");
+}
+calc();
+});
+
+/* Excel CSV */
+function exportExcel(){
 let rows=[];
-rows.push(["التاريخ",document.getElementById("attDate").value]);
-
-document.querySelectorAll("table").forEach(table=>{
-[...table.rows].forEach(r=>{
-rows.push([...r.cells].map(c=>c.innerText));
+document.querySelectorAll("table tr").forEach(tr=>{
+if(tr.classList.contains("empty"))return;
+let cols=[...tr.children].map(td=>`"${td.innerText.trim()}"`);
+rows.push(cols.join(","));
 });
-rows.push([]);
-});
-
-let csv=rows.map(r=>r.join(",")).join("\n");
-let blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
-let a=document.createElement("a");
+const blob=new Blob(["\ufeff"+rows.join("\n")],{type:"text/csv;charset=utf-8;"});
+const a=document.createElement("a");
 a.href=URL.createObjectURL(blob);
 a.download="attendance.csv";
 a.click();
