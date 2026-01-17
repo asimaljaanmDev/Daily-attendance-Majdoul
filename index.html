@@ -142,7 +142,14 @@ document.write(`
 
 </div>
 
-<button class="export-btn pdf" onclick="window.print()">📄 PDF</button>
+<button class="export-btn pdf" onclick="printPDF()">📄 تصدير PDF</button>
+
+<script>
+function printPDF(){
+    window.focus();
+    window.print();
+}
+</script>
 <button class="export-btn excel" onclick="exportExcel()">📊 Excel</button>
 
 <script>
