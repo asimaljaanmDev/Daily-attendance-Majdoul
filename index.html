@@ -92,7 +92,7 @@ th { background: #f2f2f2; font-weight: bold; }
         </thead>
         <tbody id="morningBody"></tbody>
         <tfoot>
-            <tr style="background:#f9f9f9"><td colspan="3" style="text-align:right; font-weight:bold;">إجمالي الصباح (من 18):</td><td id="mCount">0</td></tr>
+            <tr style="background:#f9f9f9"><td colspan="3" style="text-align:right; font-weight:bold;">إجمالي الصباح (من 19):</td><td id="mCount">0</td></tr>
         </tfoot>
     </table>
 
@@ -107,9 +107,9 @@ th { background: #f2f2f2; font-weight: bold; }
     </table>
 
     <div class="summary-container">
-        <div class="sum-box">الصباح: <span id="sm">0 / 18</span></div>
+        <div class="sum-box">الصباح: <span id="sm">0 / 19</span></div>
         <div class="sum-box">المساء: <span id="se">0 / 9</span></div>
-        <div class="sum-box">المجموع الكلي: <span id="st">0 / 27</span></div>
+        <div class="sum-box">المجموع الكلي: <span id="st">0 / 28</span></div>
     </div>
 
     <div class="footer">
@@ -119,8 +119,8 @@ th { background: #f2f2f2; font-weight: bold; }
 </div>
 
 <script>
-const morningJobs = ["مدير مواقف","تغطيات","تغطيات","فاليه ١","فاليه ١"," فاليه ٢ ","فاليه ٣ - فحص","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4"];
-const eveningJobs = ["تغطيات","فاليه ١","فاليه ٢","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P3"];
+const morningJobs = ["مدير مواقف","تغطيات","تغطيات","فاليه 1","فاليه 1"," فاليه 2 ","فاليه 3 - فحص","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4"];
+const eveningJobs = ["تغطيات","فاليه 1","فاليه 1","مسؤول الشحن A","مسؤول الشحن P2","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P3"];
 
 window.onload = function() {
     render();
@@ -162,7 +162,7 @@ function calc() {
     document.getElementById('eCount').innerText = e;
     document.getElementById('sm').innerText = `${m} / 18`;
     document.getElementById('se').innerText = `${e} / 9`;
-    document.getElementById('st').innerText = `${m+e} / 27`;
+    document.getElementById('st').innerText = `${m+e} / 28`;
 }
 
 function load() {
