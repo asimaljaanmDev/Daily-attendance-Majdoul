@@ -9,11 +9,18 @@
 <style>
 :root { 
     --primary: #c7a35a; 
-    --primary-dark: #a68541;
-    --secondary: #2c3e50;
     --bg-page: #f8fafc;
     --text-main: #1e293b;
+    --card-bg: #ffffff;
     --border-color: #e2e8f0;
+}
+
+/* نمط الوضع الليلي */
+body.dark-mode {
+    --bg-page: #0f172a;
+    --text-main: #f1f5f9;
+    --card-bg: #1e293b;
+    --border-color: #334155;
 }
 
 body { 
@@ -21,113 +28,90 @@ body {
     background-color: var(--bg-page); 
     margin: 0; padding: 0; 
     color: var(--text-main);
+    transition: background 0.3s ease;
 }
 
-/* القائمة الجانبية المودرن */
+/* القائمة الجانبية */
 .sidebar {
-    position: fixed; left: 30px; top: 50%; transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    padding: 20px; border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    display: flex; flex-direction: column; gap: 12px; z-index: 999;
-    width: 180px; border: 1px solid rgba(255,255,255,0.3);
+    position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+    background: var(--card-bg);
+    padding: 15px; border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    display: flex; flex-direction: column; gap: 8px; z-index: 999;
+    width: 170px; border: 1px solid var(--border-color);
 }
-
-.sidebar h3 { margin: 0 0 10px; font-size: 15px; text-align: center; color: var(--secondary); opacity: 0.7; }
 
 .btn {
-    border: none; padding: 12px; border-radius: 10px; cursor: pointer;
-    font-weight: 600; font-size: 13px; color: white; 
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    transition: all 0.3s ease;
+    border: none; padding: 10px; border-radius: 8px; cursor: pointer;
+    font-weight: 600; font-size: 12px; color: white; 
+    display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 .btn-pdf { background: var(--primary); }
 .btn-excel { background: #10b981; }
-.btn-new { background: #64748b; }
+.btn-dark { background: #334155; }
+.btn-new { background: #ef4444; }
 
 .date-input { 
-    padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; 
-    width: 100%; box-sizing: border-box; font-family: inherit; outline: none;
+    padding: 8px; border: 1px solid var(--border-color); border-radius: 6px; 
+    width: 100%; box-sizing: border-box; background: var(--card-bg); color: var(--text-main);
 }
 
-/* تصميم الورقة A4 */
+/* تصميم الورقة A4 - محسّن لمنع الانقسام */
 .page-container {
-    width: 210mm; min-height: 297mm;
-    margin: 20px auto; background: white;
-    padding: 12mm 15mm;
-    box-shadow: 0 0 40px rgba(0,0,0,0.03);
+    width: 210mm;
+    height: 296mm; /* تقليل 1 ملم لضمان الأمان في الطباعة */
+    margin: 10px auto;
+    background: white !important; /* الورقة دائماً بيضاء عند الطباعة */
+    color: #1e293b !important;
+    padding: 7mm 10mm;
     box-sizing: border-box;
-    display: flex; flex-direction: column;
-    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
 }
 
-.header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    border-bottom: 2px solid var(--primary); 
-    padding-bottom: 15px; margin-bottom: 15px; 
-}
-.header img { height: 55px; filter: grayscale(20%); }
-.header-center { text-align: center; }
-.header-center h2 { margin: 0; font-size: 20px; color: var(--secondary); letter-spacing: 1px; }
-.header-center p { margin: 5px 0 0; font-size: 13px; font-weight: 600; color: var(--primary); }
+body.dark-mode .page-container { background: white !important; color: #1e293b !important; }
 
-.date-display { font-size: 14px; margin-top: 8px; color: #64748b; font-weight: 500; direction: ltr; }
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 8px; }
+.header img { height: 50px; }
+.header-center h2 { margin: 0; font-size: 18px; }
+.date-display { font-size: 13px; font-weight: bold; margin-top: 4px; direction: ltr; color: #475569; }
 
-/* الجداول المودرن */
-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 11.5px; overflow: hidden; }
-th { 
-    background: #f1f5f9; color: var(--secondary); font-weight: 700; 
-    text-transform: uppercase; padding: 8px; border: 1px solid var(--border-color);
-}
-td { border: 1px solid var(--border-color); padding: 6px; text-align: center; color: #475569; }
+/* جداول مضغوطة جداً */
+table { width: 100%; border-collapse: collapse; margin-bottom: 5px; font-size: 10.5px; }
+th { background: #f1f5f9 !important; padding: 5px; border: 1px solid #000; color: #000; }
+td { border: 1px solid #000; padding: 3px; text-align: center; color: #000; height: 18px; }
 
-.morning-header { border-top: 3px solid #f59e0b !important; }
-.evening-header { border-top: 3px solid #3b82f6 !important; }
-
-.name-cell { 
-    outline: none; font-weight: 600; background: #fff; 
-    transition: background 0.2s; cursor: text;
-}
-.name-cell:focus { background: #fefce8; }
+.name-cell { outline: none; font-weight: 600; background: #fff; }
 .row-filled { background: #f8fafc !important; }
-.row-filled td { color: var(--text-main); }
 
-/* ملخص الإحصائيات */
-.summary-container { display: flex; justify-content: space-between; gap: 15px; margin-top: 10px; }
-.sum-box { 
-    background: #f8fafc; border: 1px solid var(--border-color); 
-    flex: 1; text-align: center; padding: 10px; border-radius: 12px;
-}
-.sum-label { display: block; font-size: 11px; color: #64748b; margin-bottom: 4px; }
-.sum-val { font-size: 14px; font-weight: 800; color: var(--secondary); }
-
+.summary-container { display: flex; justify-content: space-between; gap: 10px; margin-top: 5px; }
+.sum-box { border: 1px solid #000; flex: 1; text-align: center; padding: 5px; font-weight: bold; font-size: 12px; }
 .digit-fix { direction: ltr; display: inline-block; unicode-bidi: embed; }
 
-/* الفوتر */
+/* الفوتر ملتصق لضمان عدم الخروج */
 .footer { 
     display: flex; justify-content: space-between; 
-    margin-top: 40px; border-top: 1px dashed var(--border-color); padding-top: 20px;
+    margin-top: auto; /* يدفعه لآخر الصفحة تماماً */
+    padding-top: 10px; border-top: 1px solid #eee;
 }
-.signature { text-align: center; width: 40%; }
-.sig-line { 
-    margin-bottom: 8px; height: 1px; background: var(--secondary); 
-    width: 80%; margin: 0 auto 10px; opacity: 0.2; 
-}
-.sig-name { font-size: 13px; font-weight: 700; color: var(--secondary); }
-.sig-title { font-size: 11px; color: #64748b; margin-top: 4px; }
+.signature { text-align: center; width: 40%; font-size: 12px; font-weight: bold; }
 
-@media print { .sidebar { display: none; } .page-container { box-shadow: none; margin: 0; width: 100%; } }
+@media print { 
+    .sidebar { display: none !important; } 
+    body { background: white; }
+    .page-container { margin: 0; box-shadow: none; border: none; }
+}
 </style>
 </head>
 <body>
 
 <div class="sidebar" data-html2canvas-ignore="true">
-    <h3>التحكم بالنظام</h3>
     <input type="date" id="dateInput" class="date-input" onchange="updateDate()">
-    <button class="btn btn-pdf" onclick="generatePDF()">📄 حفظ كـ PDF</button>
+    <button class="btn btn-pdf" onclick="generatePDF()">📄 حفظ PDF</button>
     <button class="btn btn-excel" onclick="exportExcel()">📊 تصدير Excel</button>
+    <button class="btn btn-dark" onclick="toggleDarkMode()">🌙 وضع ليلي/نهاري</button>
     <button class="btn btn-new" onclick="resetPage()">🔄 يوم جديد</button>
 </div>
 
@@ -136,7 +120,7 @@ td { border: 1px solid var(--border-color); padding: 6px; text-align: center; co
         <img src="majdoul.png" alt="الشعار">
         <div class="header-center">
             <h2>LINK EXPERT COMPANY</h2>
-            <p>سجل الحضور والغياب اليومي</p>
+            <div style="font-weight:bold; font-size: 14px;">سجل الحضور اليومي</div>
             <div class="date-display" id="dateDisplay">-- / -- / ----</div>
         </div>
         <img src="linkexpert.png" alt="الشعار">
@@ -144,60 +128,39 @@ td { border: 1px solid var(--border-color); padding: 6px; text-align: center; co
 
     <table class="morning">
         <thead>
-            <tr class="morning-header">
-                <th width="6%">#</th><th width="35%">المسمى الوظيفي</th><th>الاسم الكامل</th><th width="15%">الوردية</th>
-            </tr>
+            <tr><th width="5%">#</th><th width="35%">المسمى الوظيفي</th><th>الاسم الكامل</th><th width="15%">الوردية</th></tr>
         </thead>
         <tbody id="morningBody"></tbody>
         <tfoot>
-            <tr style="background:#fcfcfc">
-                <td colspan="3" style="text-align:left; font-weight:700; padding-left:15px;">إجمالي حضور الفترة الصباحية:</td>
-                <td id="mCount" class="digit-fix" style="font-weight:800; color:var(--primary)">0</td>
+            <tr style="background:#f9f9f9">
+                <td colspan="3" style="text-align:left; font-weight:bold; padding-left:10px;">إجمالي حضور الصباح:</td>
+                <td id="mCount" class="digit-fix">0</td>
             </tr>
         </tfoot>
     </table>
 
     <table class="evening">
         <thead>
-            <tr class="evening-header">
-                <th width="6%">#</th><th width="35%">المسمى الوظيفي</th><th>الاسم الكامل</th><th width="15%">الوردية</th>
-            </tr>
+            <tr><th width="5%">#</th><th width="35%">المسمى الوظيفي</th><th>الاسم الكامل</th><th width="15%">الوردية</th></tr>
         </thead>
         <tbody id="eveningBody"></tbody>
         <tfoot>
-            <tr style="background:#fcfcfc">
-                <td colspan="3" style="text-align:left; font-weight:700; padding-left:15px;">إجمالي حضور الفترة المسائية:</td>
-                <td id="eCount" class="digit-fix" style="font-weight:800; color:#3b82f6">0</td>
+            <tr style="background:#f9f9f9">
+                <td colspan="3" style="text-align:left; font-weight:bold; padding-left:10px;">إجمالي حضور المساء:</td>
+                <td id="eCount" class="digit-fix">0</td>
             </tr>
         </tfoot>
     </table>
 
     <div class="summary-container">
-        <div class="sum-box">
-            <span class="sum-label">الصباح</span>
-            <span class="sum-val digit-fix" id="sm">0 / 19</span>
-        </div>
-        <div class="sum-box">
-            <span class="sum-label">المساء</span>
-            <span class="sum-val digit-fix" id="se">0 / 9</span>
-        </div>
-        <div class="sum-box" style="background: var(--secondary);">
-            <span class="sum-label" style="color: #cbd5e1;">المجموع العام</span>
-            <span class="sum-val digit-fix" id="st" style="color: white;">0 / 28</span>
-        </div>
+        <div class="sum-box">الصباح: <span class="digit-fix" id="sm">0 / 19</span></div>
+        <div class="sum-box">المساء: <span class="digit-fix" id="se">0 / 9</span></div>
+        <div class="sum-box" style="background:#f1f5f9">المجموع: <span class="digit-fix" id="st">0 / 28</span></div>
     </div>
 
     <div class="footer">
-        <div class="signature">
-            <div class="sig-line"></div>
-            <div class="sig-name">سلمان الحمود</div>
-            <div class="sig-title">مسؤول العلاقات العامة</div>
-        </div>
-        <div class="signature">
-            <div class="sig-line"></div>
-            <div class="sig-name">سالم الشمري</div>
-            <div class="sig-title">مدير المشروع</div>
-        </div>
+        <div class="signature">مسؤول العلاقات العامة<br>سلمان الحمود</div>
+        <div class="signature">مدير المشروع<br>سالم الشمري</div>
     </div>
 </div>
 
@@ -212,12 +175,13 @@ window.onload = function() {
         document.getElementById('dateInput').valueAsDate = new Date();
         updateDate();
     }
+    if(localStorage.getItem('dark') === 'true') document.body.classList.add('dark-mode');
 };
 
 function render() {
     let m = "", e = "";
-    morningJobs.forEach((j, i) => m += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'m',${i})"></td><td style="font-weight:600">7 AM</td></tr>`);
-    eveningJobs.forEach((j, i) => e += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'e',${i})"></td><td style="font-weight:600">7 PM</td></tr>`);
+    morningJobs.forEach((j, i) => m += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'m',${i})"></td><td>7ص-7م</td></tr>`);
+    eveningJobs.forEach((j, i) => e += `<tr><td>${i+1}</td><td>${j}</td><td class="name-cell" contenteditable="true" oninput="save(this,'e',${i})"></td><td>7م-7ص</td></tr>`);
     document.getElementById('morningBody').innerHTML = m;
     document.getElementById('eveningBody').innerHTML = e;
 }
@@ -226,7 +190,9 @@ function updateDate() {
     const v = document.getElementById('dateInput').value;
     if(v) {
         const d = new Date(v);
-        document.getElementById('dateDisplay').innerText = d.toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+        // إضافة اسم اليوم بالتنسيق المطلوب
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateDisplay').innerText = d.toLocaleDateString('en-US', options);
         localStorage.setItem('le_d', v);
     }
 }
@@ -261,22 +227,27 @@ function load() {
     calc();
 }
 
-function resetPage() { if(confirm("هل أنت متأكد من مسح كافة البيانات؟")) { localStorage.clear(); location.reload(); } }
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('dark', isDark);
+}
+
+function resetPage() { if(confirm("بدء يوم جديد؟")) { localStorage.clear(); location.reload(); } }
 
 function generatePDF() {
     const element = document.getElementById('printableArea');
     const opt = {
         margin: 0,
-        filename: `Attendance_Report_${document.getElementById('dateInput').value}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+        filename: `Attendance_${document.getElementById('dateInput').value}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 3, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
 }
 
 function exportExcel() {
-    let csv = "\ufeffPosition,Name,Shift\n";
+    let csv = "\ufeffالمسمى,الاسم,الفترة\n";
     document.querySelectorAll('tr.row-filled').forEach(tr => {
         const tds = tr.querySelectorAll('td');
         csv += `"${tds[1].innerText}","${tds[2].innerText}","${tds[3].innerText}"\n`;
@@ -284,7 +255,7 @@ function exportExcel() {
     const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = "Attendance_Report.csv";
+    a.download = "Attendance.csv";
     a.click();
 }
 </script>
