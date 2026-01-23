@@ -2,221 +2,235 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>جدول الحضور اليومي</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام الحضور الذكي - LINK EXPERT</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-body{font-family:Tahoma;background:#eaeaea;padding:20px}
-.page{width:210mm;margin:auto;background:#fff;padding:15px;border:1px solid #bbb}
+:root { --primary: #c7a35a; --secondary: #2c3e50; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; padding: 20px; margin: 0; }
 
-/* HEADER */
-.header{
-display:grid;
-grid-template-columns:1fr 2fr 1fr;
-align-items:center;
-border-bottom:6px solid #c7a35a;
-padding-bottom:10px
+/* تصميم الورقة */
+.page { 
+    width: 210mm; 
+    min-height: 297mm; 
+    margin: 0 auto; 
+    background: #fff; 
+    padding: 10mm; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
 }
-.header img{height:90px}
-.center{text-align:center;font-weight:bold}
 
-/* DATE DISPLAY */
-#dateDisplay{margin-top:5px;font-size:14px;font-weight:normal}
+/* الهيدر */
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+.header img { height: 60px; object-fit: contain; }
+.header-center { text-align: center; }
+.header-center h2 { margin: 0; font-size: 18px; color: var(--secondary); }
+.date-display { font-size: 14px; margin-top: 5px; color: #555; }
 
-/* TABLE */
-table{width:100%;border-collapse:collapse;margin-top:15px;font-size:13px}
-th,td{border:1px solid #000;padding:6px;text-align:center}
-.morning th{background:#ffe699}
-.evening th{background:#cfe2f3}
-td.name{background:#fffbe6}
+/* الجداول */
+table { width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px; }
+th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
+th { background-color: #f8f9fa; color: var(--secondary); font-weight: bold; }
 
-/* ROW COLORS */
-tr.morning-filled{background:#fff2cc}
-tr.evening-filled{background:#ddebf7}
+/* ألوان الفترات */
+.morning th { background: #fff3cd !important; border-color: #ffeeba; }
+.evening th { background: #d1ecf1 !important; border-color: #bee5eb; }
 
-/* COUNT */
-.count-cell{background:#ffd966;font-weight:bold}
+/* خلايا الإدخال */
+td.name { background: #fff; cursor: text; transition: background 0.2s; }
+td.name:focus { background: #e8f0fe; outline: none; }
+tr.filled-morning { background: #fff8e1; }
+tr.filled-evening { background: #e0f7fa; }
 
-/* SUMMARY */
-.summary{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin:20px 0
+/* العدادات */
+.count-badge { background: var(--secondary); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+
+/* لوحة التحكم الجانبية (لا تظهر في الطباعة) */
+.controls {
+    position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+    background: #fff; padding: 15px; border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: 10px;
+    z-index: 1000;
 }
-.box{border:1px solid #000;text-align:center;font-weight:bold;padding:10px}
-
-/* FOOTER */
-.footer{display:grid;grid-template-columns:1fr 1fr;margin-top:25px}
-.signature{border:1px solid #000;padding:10px;height:70px;font-weight:bold}
-.right{text-align:right}
-.left{text-align:left}
-
-/* BUTTONS */
-.export-btn{
-position:fixed;left:25px;padding:10px 20px;
-font-weight:bold;border:none;border-radius:6px;cursor:pointer
+.btn {
+    padding: 10px 15px; border: none; border-radius: 6px;
+    font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    transition: transform 0.2s;
 }
-.pdf{bottom:25px;background:#c7a35a}
-.excel{bottom:70px;background:#4CAF50;color:#fff}
+.btn:hover { transform: scale(1.05); }
+.btn-pdf { background: #dc3545; color: white; }
+.btn-excel { background: #28a745; color: white; }
+.btn-clear { background: #6c757d; color: white; }
 
-/* PRINT */
-@page{size:A4;margin:12mm}
-@media print{
-.export-btn{display:none}
-tr.empty{display:none}
-#dateInput{display:none}
-#dateDisplay{display:block}
-}
+/* إخفاء العناصر عند التصدير */
+.no-print { display: none; }
+
+/* التواقيع والملخص */
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+.summary-box { border: 1px solid #ccc; padding: 5px; text-align: center; border-radius: 4px; }
+.footer { display: flex; justify-content: space-between; margin-top: 20px; }
+.signature-box { width: 40%; border-top: 1px solid #000; padding-top: 5px; text-align: center; margin-top: 30px; font-weight: bold; }
+
 </style>
 </head>
-
 <body>
-<div class="page">
 
-<!-- HEADER -->
-<div class="header">
-<img src="majdoul.png">
-<div class="center">
-شركة LINK EXPERT<br>
-جدول الحضور اليومي<br>
-<input type="date" id="dateInput" onchange="showDay()">
-<div id="dateDisplay"></div>
-</div>
-<img src="linkexpert.png">
+<div class="controls" data-html2canvas-ignore="true">
+    <div style="text-align:center; margin-bottom:5px; font-weight:bold;">لوحة التحكم</div>
+    <input type="date" id="dateInput" onchange="updateDate()" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+    <button class="btn btn-pdf" onclick="generatePDF()">📄 حفظ كـ PDF</button>
+    <button class="btn btn-excel" onclick="exportExcel()">📊 حفظ كـ Excel</button>
+    <button class="btn btn-clear" onclick="clearData()">🔄 يوم جديد</button>
+    <div id="saveStatus" style="font-size:10px; color:green; text-align:center;">تم الحفظ تلقائياً ✅</div>
 </div>
 
-<!-- MORNING -->
-<table class="morning">
-<tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
-<script>
-const morningJobs=[
-"مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2",
-"فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5",
-"منظم مواقف P1","منظم مواقف P1","منظم مواقف P1",
-"منظم مواقف P2","منظم مواقف P2","منظم مواقف P2",
-"منظم مواقف P3","منظم مواقف P4",
-"مسؤول الشحن A","مسؤول الشحن P2"
-];
-morningJobs.forEach((j,i)=>{
-document.write(`<tr class="empty morning-row">
-<td>${i+1}</td><td>${j}</td>
-<td class="name morning-name" contenteditable></td><td>7ص–7م</td>
-</tr>`);
-});
-</script>
-<tr><td colspan="3">صباح (من 19)</td><td class="count-cell" id="mCount">0</td></tr>
-</table>
+<div class="page" id="reportPage">
+    <div class="header">
+        <img src="majdoul.png" alt="Majdoul"> <div class="header-center">
+            <h2>LINK EXPERT COMPANY</h2>
+            <div>جدول الحضور اليومي</div>
+            <div class="date-display" id="dateDisplay">--/--/----</div>
+        </div>
+        <img src="linkexpert.png" alt="LinkExpert">
+    </div>
 
-<!-- EVENING -->
-<table class="evening">
-<tr><th>#</th><th>المسمى الوظيفي</th><th>الاسم</th><th>الفترة</th></tr>
-<script>
-const eveningJobs=[
-"تغطيات","فاليه 1","فاليه 2","منظم بوابة 3","منظم بوابة 5",
-"مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"
-];
-eveningJobs.forEach((j,i)=>{
-document.write(`<tr class="empty evening-row">
-<td>${i+1}</td><td>${j}</td>
-<td class="name evening-name" contenteditable></td><td>7م–7ص</td>
-</tr>`);
-});
-</script>
-<tr><td colspan="3">مساء (من 9)</td><td class="count-cell" id="eCount">0</td></tr>
-</table>
+    <table class="morning">
+        <thead><tr><th width="5%">#</th><th width="35%">المسمى الوظيفي</th><th>اسم الموظف</th><th width="15%">التوقيت</th></tr></thead>
+        <tbody id="morningBody"></tbody>
+        <tfoot><tr><td colspan="3" style="text-align:left; font-weight:bold; padding-left:10px;">العدد الكلي (صباح):</td><td class="count-badge" id="cntM">0</td></tr></tfoot>
+    </table>
 
-<!-- SUMMARY -->
-<div class="summary">
-<div class="box">صباح<br><span id="sm">0 / 19</span></div>
-<div class="box">مساء<br><span id="se">0 / 9</span></div>
-<div class="box">المجموع<br><span id="st">0 / 28</span></div>
+    <table class="evening">
+        <thead><tr><th width="5%">#</th><th width="35%">المسمى الوظيفي</th><th>اسم الموظف</th><th width="15%">التوقيت</th></tr></thead>
+        <tbody id="eveningBody"></tbody>
+        <tfoot><tr><td colspan="3" style="text-align:left; font-weight:bold; padding-left:10px;">العدد الكلي (مساء):</td><td class="count-badge" id="cntE">0</td></tr></tfoot>
+    </table>
+
+    <div class="summary-grid">
+        <div class="summary-box">صباح <br> <span id="sm">0 / 19</span></div>
+        <div class="summary-box">مساء <br> <span id="se">0 / 9</span></div>
+        <div class="summary-box">الإجمالي <br> <span id="st">0 / 28</span></div>
+    </div>
+
+    <div class="footer">
+        <div class="signature-box">مسؤول العلاقات العامة<br>سلمان الحمود</div>
+        <div class="signature-box">مدير المشروع<br>سالم الشمري</div>
+    </div>
 </div>
-
-<!-- FOOTER -->
-<div class="footer">
-<div class="signature right">مسؤول العلاقات العامة<br>سلمان الحمود</div>
-<div class="signature left">مدير المشروع<br>سالم الشمري</div>
-</div>
-
-</div>
-
-<!-- BUTTONS -->
-<button class="export-btn pdf" onclick="window.print()">📄 PDF</button>
-<button class="export-btn excel" onclick="exportExcel()">📊 Excel</button>
 
 <script>
-// تنظيف الاسم
-function cleanName(txt){return txt.replace(/\s+/g,' ').trim();}
+const morningJobs = ["مدير المواقف","تغطيات","تغطيات","فاليه 1","فاليه 1","فاليه 2","فاليه 3 - فحص","منظم بوابة 3","منظم بوابة 5","منظم مواقف P1","منظم مواقف P1","منظم مواقف P1","منظم مواقف P2","منظم مواقف P2","منظم مواقف P2","منظم مواقف P3","منظم مواقف P4","مسؤول الشحن A","مسؤول الشحن P2"];
+const eveningJobs = ["تغطيات","فاليه 1","فاليه 2","منظم بوابة 3","منظم بوابة 5","مسؤول الشحن A","مسؤول الشحن P2","منظم مواقف P1","منظم مواقف P3"];
 
-// التاريخ
-function showDay(){
-    const input=document.getElementById("dateInput");
-    const display=document.getElementById("dateDisplay");
-    if(!input.value){ display.innerText=""; return; }
-    const date=new Date(input.value);
-    const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-    const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    display.innerText=`${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+// تهيئة الصفحة عند التحميل
+window.onload = function() {
+    renderTable('morningBody', morningJobs, 'morning');
+    renderTable('eveningBody', eveningJobs, 'evening');
+    loadData(); // استرجاع البيانات المحفوظة
+    updateDate();
+};
+
+function renderTable(id, jobs, type) {
+    const tbody = document.getElementById(id);
+    tbody.innerHTML = jobs.map((job, i) => `
+        <tr class="row-${type}">
+            <td>${i + 1}</td>
+            <td>${job}</td>
+            <td class="name" contenteditable="true" oninput="saveData(this, '${type}')" data-id="${type}-${i}"></td>
+            <td>${type === 'morning' ? '7ص - 7م' : '7م - 7ص'}</td>
+        </tr>
+    `).join('');
 }
 
-// حساب المجموع
-function calc(){
-    const morningCells=Array.from(document.querySelectorAll('.morning-name'));
-    const eveningCells=Array.from(document.querySelectorAll('.evening-name'));
+// 1. الحفظ التلقائي (ميزة Pro)
+function saveData(cell, type) {
+    const row = cell.parentElement;
+    const val = cell.innerText.trim();
+    
+    // تلوين الصف
+    if(val) row.classList.add(type === 'morning' ? 'filled-morning' : 'filled-evening');
+    else row.classList.remove('filled-morning', 'filled-evening');
 
-    const m=morningCells.filter(c=>cleanName(c.innerText)!=="").length;
-    const e=eveningCells.filter(c=>cleanName(c.innerText)!=="").length;
+    // الحفظ في ذاكرة المتصفح
+    const id = cell.getAttribute('data-id');
+    localStorage.setItem(id, val);
 
-    document.getElementById("mCount").innerText=m;
-    document.getElementById("eCount").innerText=e;
-    document.getElementById("sm").innerText=`${m} / 19`;
-    document.getElementById("se").innerText=`${e} / 9`;
-    document.getElementById("st").innerText=`${m+e} / 28`;
+    calc();
 }
 
-// منع التكرار وتلوين الصفوف
-document.querySelectorAll('.name').forEach(cell=>{
-    cell.addEventListener('input',()=>{
-        const row=cell.closest('tr');
-        const name=cleanName(cell.innerText);
-
-        if(name){
-            const names=Array.from(document.querySelectorAll('.name'))
-                .map(c=>cleanName(c.innerText)).filter(n=>n!=="");
-            if(names.filter(n=>n===name).length>1){
-                alert("⚠️ الاسم مكرر");
-                cell.innerText="";
-                row.classList.remove('morning-filled','evening-filled');
-                row.classList.add('empty');
-                calc();
-                return;
-            }
-
-            row.classList.remove('empty','morning-filled','evening-filled');
-            if(cell.classList.contains('morning-name')) row.classList.add('morning-filled');
-            if(cell.classList.contains('evening-name')) row.classList.add('evening-filled');
-
-        } else {
-            row.classList.remove('morning-filled','evening-filled');
-            row.classList.add('empty');
+// استرجاع البيانات
+function loadData() {
+    document.querySelectorAll('.name').forEach(cell => {
+        const id = cell.getAttribute('data-id');
+        const saved = localStorage.getItem(id);
+        if(saved) {
+            cell.innerText = saved;
+            const type = id.split('-')[0];
+            cell.parentElement.classList.add(type === 'morning' ? 'filled-morning' : 'filled-evening');
         }
-
-        calc();
     });
-});
+    const savedDate = localStorage.getItem('savedDate');
+    if(savedDate) document.getElementById('dateInput').value = savedDate;
+    calc();
+}
 
-// Excel CSV
-function exportExcel(){
-    let rows=[];
-    document.querySelectorAll("table tr").forEach(tr=>{
-        if(tr.classList.contains("empty")) return;
-        rows.push([...tr.children].map(td=>`"${td.innerText.trim()}"`).join(","));
+function updateDate() {
+    const input = document.getElementById("dateInput");
+    const display = document.getElementById("dateDisplay");
+    if(input.value) {
+        const d = new Date(input.value);
+        display.innerText = d.toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        localStorage.setItem('savedDate', input.value);
+    }
+}
+
+function calc() {
+    const m = document.querySelectorAll('.filled-morning').length;
+    const e = document.querySelectorAll('.filled-evening').length;
+    document.getElementById('cntM').innerText = m;
+    document.getElementById('cntE').innerText = e;
+    document.getElementById('sm').innerText = `${m} / 19`;
+    document.getElementById('se').innerText = `${e} / 9`;
+    document.getElementById('st').innerText = `${m+e} / 28`;
+}
+
+// مسح البيانات لليوم الجديد
+function clearData() {
+    if(confirm("هل أنت متأكد من مسح جميع الأسماء لبدء يوم جديد؟")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+// 2. التصدير باستخدام html2pdf (ميزة Pro)
+function generatePDF() {
+    const element = document.getElementById('reportPage');
+    const opt = {
+        margin:       0,
+        filename:     `حضور_${new Date().toISOString().slice(0,10)}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    // مكتبة تقوم بتصوير الصفحة وتحويلها لـ PDF
+    html2pdf().set(opt).from(element).save();
+}
+
+// 3. تصدير Excel محسّن
+function exportExcel() {
+    let csv = "\ufeffالمسمى,الاسم,الفترة\n";
+    document.querySelectorAll("tr").forEach(tr => {
+        const nameCell = tr.querySelector('.name');
+        if(nameCell && nameCell.innerText.trim()) {
+            const cols = tr.querySelectorAll('td');
+            csv += `"${cols[1].innerText}","${nameCell.innerText}","${cols[3].innerText}"\n`;
+        }
     });
-    const blob=new Blob(["\ufeff"+rows.join("\n")],{type:"text/csv;charset=utf-8"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download="attendance.csv";
-    a.click();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8"}));
+    link.download = "جدول_الحضور.csv";
+    link.click();
 }
 </script>
 
